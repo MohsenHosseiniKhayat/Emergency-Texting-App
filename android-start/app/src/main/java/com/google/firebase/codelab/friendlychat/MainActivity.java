@@ -121,22 +121,18 @@ public class MainActivity extends AppCompatActivity
         mUsername = ANONYMOUS;
 
         //Initializing Firebase Auth    Step6
-        mFirebaseAuth =  FirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
-        if (mFirebaseUser == null)
-        {
+        if (mFirebaseUser == null) {
             //Not signed in, launch the Sign in activity
-            startActivity(new Intent (this, SignInActivity.class));
+            startActivity(new Intent(this, SignInActivity.class));
             finish();
             return;
-        }
-        else
-        {
+        } else {
             //Getting the username and if available user photo
             mUsername = mFirebaseUser.getDisplayName();
-            if (mFirebaseUser.getPhotoUrl() != null)
-            {
+            if (mFirebaseUser.getPhotoUrl() != null) {
                 mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
             }
         }
@@ -154,27 +150,25 @@ public class MainActivity extends AppCompatActivity
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // Initialize Firebase Remote Config.
-            mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
         // Define Firebase Remote Config Settings.
-            FirebaseRemoteConfigSettings firebaseRemoteConfigSettings =
-                    new FirebaseRemoteConfigSettings.Builder()
-                            .setDeveloperModeEnabled(true)
-                            .build();
+        FirebaseRemoteConfigSettings firebaseRemoteConfigSettings =
+                new FirebaseRemoteConfigSettings.Builder()
+                        .setDeveloperModeEnabled(true)
+                        .build();
 
         // Define default config values. Defaults are used when fetched config values are not
         // available. Eg: if an error occurred fetching values from the server.
-            Map<String, Object> defaultConfigMap = new HashMap<>();
-            defaultConfigMap.put("friendly_msg_length", 10L);
+        Map<String, Object> defaultConfigMap = new HashMap<>();
+        defaultConfigMap.put("friendly_msg_length", 10L);
 
         // Apply config settings and default values.
-            mFirebaseRemoteConfig.setConfigSettings(firebaseRemoteConfigSettings);
-            mFirebaseRemoteConfig.setDefaults(defaultConfigMap);
+        mFirebaseRemoteConfig.setConfigSettings(firebaseRemoteConfigSettings);
+        mFirebaseRemoteConfig.setDefaults(defaultConfigMap);
 
         // Fetch remote config.
-            fetchConfig();
-
-
+        fetchConfig();
 
 
         // New child entries
@@ -240,9 +234,6 @@ public class MainActivity extends AppCompatActivity
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
 
-
-
-
         mMessageEditText = (EditText) findViewById(R.id.messageEditText);
         mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mSharedPreferences
                 .getInt(CodelabPreferences.FRIENDLY_MSG_LENGTH, DEFAULT_MSG_LENGTH_LIMIT))});
@@ -268,8 +259,7 @@ public class MainActivity extends AppCompatActivity
         mSendButton = (Button) findViewById(R.id.sendButton);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 FriendlyMessage friendlyMessage = new FriendlyMessage(mMessageEditText.getText().toString(), mUsername, mPhotoUrl);
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
                 mMessageEditText.setText("");
@@ -400,5 +390,13 @@ public class MainActivity extends AppCompatActivity
         mMessageEditText.setFilters(new InputFilter[]{new
                 InputFilter.LengthFilter(emergency_msg_length.intValue())});
         Log.d(TAG, "FML is: " + emergency_msg_length);
+    }
+
+    private void sendInvitation() {
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                .setMessage(getString(R.string.invitation_message))
+                .setCallToActionText(getString(R.string.invitation_cta))
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
     }
 }

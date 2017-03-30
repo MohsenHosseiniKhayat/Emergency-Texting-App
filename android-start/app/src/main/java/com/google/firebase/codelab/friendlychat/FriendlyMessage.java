@@ -15,20 +15,26 @@
  */
 package com.google.firebase.codelab.friendlychat;
 
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+
 public class FriendlyMessage {
 
     private String id;
     private String text;
     private String name;
     private String photoUrl;
+    private ArrayList<String> receiverIds;
 
     public FriendlyMessage() {
     }
 
-    public FriendlyMessage(String text, String name, String photoUrl) {
+    public FriendlyMessage(String text, String name, String photoUrl, ArrayList<String> receiverIds) {
         this.text = text;
         this.name = name;
         this.photoUrl = photoUrl;
+        this.receiverIds = receiverIds;
     }
 
     public String getId() {
@@ -61,5 +67,15 @@ public class FriendlyMessage {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public void setReceiverId (ArrayList<String> receiverIds)
+    {
+        this.receiverIds = receiverIds;
+    }
+
+    public ArrayList<String> getReceiverId ()
+    {
+        return receiverIds;
     }
 }

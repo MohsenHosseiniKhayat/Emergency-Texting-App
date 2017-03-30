@@ -43,6 +43,11 @@
         </activity>
         <activity android:name=".SignInActivity" />
         <activity android:name=".SendAlertActivity" />
+        <activity android:name=".PreferencesActivity" />
+        <activity
+            android:name=".ContactPicker"
+            android:label="@string/title_activity_contact_picker"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

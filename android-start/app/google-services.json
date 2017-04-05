@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "6276637611",
+    "firebase_url": "https://emergency-texting-app.firebaseio.com",
+    "project_id": "emergency-texting-app",
+    "storage_bucket": "emergency-texting-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6276637611:android:b5d75907de594a2d",
+        "android_client_info": {
+          "package_name": "com.google.firebase.codelab.friendlychat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "6276637611-s3mkfs97uislj2co5t0e8oj27g55amfu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.firebase.codelab.friendlychat",
+            "certificate_hash": "ff78048fa62c840c847384ec916d639443932a2f"
+          }
+        },
+        {
+          "client_id": "6276637611-dn5q5ck3jkj2g2nq2nvjt8s0n7jsmd80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2n7sh783jICJ6WwWQlG35HrwUsy6raGc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "6276637611-dn5q5ck3jkj2g2nq2nvjt8s0n7jsmd80.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

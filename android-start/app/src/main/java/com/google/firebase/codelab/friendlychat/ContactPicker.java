@@ -27,8 +27,6 @@ public class ContactPicker extends AppCompatActivity {
                 startActivityForResult(intent, PICK_CONTACT);
             }
         });
-
-
     }
 
     @Override
@@ -41,6 +39,7 @@ public class ContactPicker extends AppCompatActivity {
             cursor.moveToFirst();
             int column = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
             Log.d("Email Address", cursor.getColumnName(column));
+
         }
     }
 

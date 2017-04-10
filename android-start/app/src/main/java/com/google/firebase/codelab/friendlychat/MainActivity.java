@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FriendlyMessage friendlyMessage = new FriendlyMessage(mMessageEditText.getText().toString(), mUsername, mPhotoUrl, receiverIds);
+                FriendlyMessage friendlyMessage = new FriendlyMessage(mMessageEditText.getText().toString(), mUsername, mPhotoUrl, receiverIds, null);
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
                 mMessageEditText.setText("");
             }
@@ -313,6 +313,10 @@ public class MainActivity extends AppCompatActivity
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, SignInActivity.class));
+                return true;
+            case R.id.preferences_menu:
+                Intent prefIntent = new Intent(this,PreferencesActivity.class);
+                startActivity(prefIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -384,7 +388,6 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
     }
-
 
     /**
      * Apply retrieved length limit to edit text field.

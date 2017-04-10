@@ -15,6 +15,8 @@
  */
 package com.google.firebase.codelab.friendlychat;
 
+import android.location.Location;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
@@ -25,16 +27,18 @@ public class FriendlyMessage {
     private String text;
     private String name;
     private String photoUrl;
-    private ArrayList<String> receiverIds;
+    public ArrayList<String> receiverIds;
+    private Location locationOfOrigin;
 
     public FriendlyMessage() {
     }
 
-    public FriendlyMessage(String text, String name, String photoUrl, ArrayList<String> receiverIds) {
+    public FriendlyMessage(String text, String name, String photoUrl, ArrayList<String> receiverIds, Location location) {
         this.text = text;
         this.name = name;
         this.photoUrl = photoUrl;
         this.receiverIds = receiverIds;
+        this.locationOfOrigin = location;
     }
 
     public String getId() {
@@ -78,4 +82,16 @@ public class FriendlyMessage {
     {
         return receiverIds;
     }
+
+    public void setLocationOfOrigin (Location location)
+    {
+        this.locationOfOrigin = location;
+    }
+
+    public Location getLocationOfOrigin ()
+    {
+        return locationOfOrigin;
+    }
+
+
 }

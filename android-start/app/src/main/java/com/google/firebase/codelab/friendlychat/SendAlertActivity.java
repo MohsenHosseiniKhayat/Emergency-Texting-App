@@ -2,6 +2,7 @@ package com.google.firebase.codelab.friendlychat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +38,6 @@ public class SendAlertActivity extends AppCompatActivity {
     private FirebaseUser mFirebaseUser;
     LocationListener locListener;
     LocationManager myManager;
-    private String locationCordinates = "";
 
 
     @Override
@@ -48,7 +49,6 @@ public class SendAlertActivity extends AppCompatActivity {
         locListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                //locationCordinates += "\n" + location.getLatitude() + " " + location.getLongitude();
             }
 
             @Override
@@ -70,18 +70,23 @@ public class SendAlertActivity extends AppCompatActivity {
         //
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        mUsername = mFirebaseUser.getDisplayName();
         Button accidentButton = (Button) findViewById(R.id.buttonAccident);
         Button assaultButton = (Button) findViewById(R.id.buttonAssault);
         Button disasterButton = (Button) findViewById(R.id.buttonDisaster);
         Button safeButton = (Button) findViewById(R.id.buttonSafe);
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        //final String dummyText = "Dummy";
+
         final String ACCIDENT = "is involved in an ACCIDENT";
         final String ASSAULT = "is being Robbed/Assaulted";
         final String NATURALDISASTER = "is affected by a NATURAL DISASTER";
-        final String SAFE = "is now SAFE";
-        final ArrayList<String> dummyContacts = new ArrayList<>();
+        final String SAFE = "is SAFE now";
+        final ArrayList<String> favContacts = new ArrayList<>();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MyFavorites",Context.MODE_PRIVATE);
+        String newContactEmail = sharedPreferences.getString("Email Address","");
+        favContacts.add(newContactEmail);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -94,6 +99,7 @@ public class SendAlertActivity extends AppCompatActivity {
             return;
         }
         myManager.requestLocationUpdates("gps", 1000, 5, locListener);
+        final SendAlertActivity thisStrong = this;
         accidentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,8 +108,9 @@ public class SendAlertActivity extends AppCompatActivity {
 
                 String accidentMessage = mUsername + " " + ACCIDENT;
                 try {
-                FriendlyMessage friendlyMessage = new FriendlyMessage(accidentMessage, mUsername, mPhotoUrl,dummyContacts,myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                FriendlyMessage friendlyMessage = new FriendlyMessage(accidentMessage, mUsername, mPhotoUrl,favContacts,myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+                    Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG).show();
                 }
                 catch (SecurityException se)
                 {
@@ -120,8 +127,9 @@ public class SendAlertActivity extends AppCompatActivity {
 
                 String assaultMessage = mUsername + " " + ASSAULT;
                 try {
-                    FriendlyMessage friendlyMessage = new FriendlyMessage(assaultMessage, mUsername, mPhotoUrl, dummyContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    FriendlyMessage friendlyMessage = new FriendlyMessage(assaultMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+                    Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG).show();
                 }
                 catch (SecurityException se)
                 {
@@ -138,8 +146,9 @@ public class SendAlertActivity extends AppCompatActivity {
 
                 String disasterMessage = mUsername + " " + NATURALDISASTER;
                 try {
-                    FriendlyMessage friendlyMessage = new FriendlyMessage(disasterMessage, mUsername, mPhotoUrl, dummyContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    FriendlyMessage friendlyMessage = new FriendlyMessage(disasterMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+                    Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG).show();
                 }
                 catch (SecurityException se)
                 {
@@ -154,8 +163,9 @@ public class SendAlertActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String safetyMessage = mUsername + " " + SAFE;
                 try {
-                    FriendlyMessage friendlyMessage = new FriendlyMessage(safetyMessage, mUsername, mPhotoUrl, dummyContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    FriendlyMessage friendlyMessage = new FriendlyMessage(safetyMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+                    Toast.makeText(thisStrong, "Safety notice sent!", Toast.LENGTH_LONG).show();
                 }
                 catch (SecurityException se)
                 {
@@ -164,4 +174,5 @@ public class SendAlertActivity extends AppCompatActivity {
             }
         });
     }
+
 }

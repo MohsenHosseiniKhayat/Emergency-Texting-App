@@ -28,7 +28,8 @@ public class FriendlyMessage {
     private String name;
     private String photoUrl;
     public ArrayList<String> receiverIds;
-    private Location locationOfOrigin;
+    private double latitude;
+    private double longitude;
 
     public FriendlyMessage() {
     }
@@ -38,7 +39,8 @@ public class FriendlyMessage {
         this.name = name;
         this.photoUrl = photoUrl;
         this.receiverIds = receiverIds;
-        this.locationOfOrigin = location;
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
     }
 
     public String getId() {
@@ -83,15 +85,19 @@ public class FriendlyMessage {
         return receiverIds;
     }
 
-    public void setLocationOfOrigin (Location location)
-    {
-        this.locationOfOrigin = location;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public Location getLocationOfOrigin ()
-    {
-        return locationOfOrigin;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
+    public double getLongitude() {
+        return longitude;
+    }
 
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 }

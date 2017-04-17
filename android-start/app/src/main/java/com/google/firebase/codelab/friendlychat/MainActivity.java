@@ -15,8 +15,11 @@
  */
 package com.google.firebase.codelab.friendlychat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -54,9 +57,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.appindexing.Action;
@@ -176,6 +182,7 @@ public class MainActivity extends AppCompatActivity
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
         mFirebaseAdapter = new FirebaseRecyclerAdapter<FriendlyMessage,
                 MessageViewHolder>(
                 FriendlyMessage.class,
@@ -266,7 +273,47 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 FriendlyMessage friendlyMessage = new FriendlyMessage(mMessageEditText.getText().toString(), mUsername, mPhotoUrl, receiverIds, null);
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+                //lastKnownLocation = friendlyMessage.getLocationOfOrigin();
                 mMessageEditText.setText("");
+            }
+        });
+
+        final Button viewLocation = (Button) findViewById(R.id.viewLocation);
+        viewLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Obtain the location of the last message received
+                Query query = mFirebaseDatabaseReference.child(MESSAGES_CHILD).limitToLast(1);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        DataSnapshot messageSnapshot = dataSnapshot.getChildren().iterator().next();
+                        FriendlyMessage lastMessage = messageSnapshot.getValue(FriendlyMessage.class);
+//                        Location lastKnownLocation = lastMessage.getLocationOfOrigin();
+                        // geo:<lat>,<long>?q=<lat>,<long>(Label+Name)
+                        String lastLocation = "geo:" + lastMessage.getLatitude() + "," + lastMessage.getLongitude() + "?q=" + lastMessage.getLatitude() + "," + lastMessage.getLongitude() + "(" + lastMessage.getName() + ")";
+                        Uri googleMapsIntentUri = Uri.parse(lastLocation);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, googleMapsIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        final Button sendAlert = (Button) findViewById(R.id.SendAlert);
+        final Context thisContext = this;
+        sendAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alertIntent = new Intent(thisContext, SendAlertActivity.class);
+                startActivity(alertIntent);
             }
         });
     }
@@ -315,7 +362,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(this, SignInActivity.class));
                 return true;
             case R.id.preferences_menu:
-                Intent prefIntent = new Intent(this,PreferencesActivity.class);
+                Intent prefIntent = new Intent(this, PreferencesActivity.class);
                 startActivity(prefIntent);
                 return true;
             default:

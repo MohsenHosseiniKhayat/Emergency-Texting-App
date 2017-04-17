@@ -1,6 +1,8 @@
 package com.google.firebase.codelab.friendlychat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -8,12 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class PreferencesActivity extends AppCompatActivity {
 
     public final int PICK_CONTACT = 2015;
+    private int numberOfToasts = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +38,40 @@ public class PreferencesActivity extends AppCompatActivity {
         });
 
         Spinner notificationsNumSpinner = (Spinner) findViewById(R.id.spinnerNumOfNotifications);
-        int [] nums = {5,10,20,50};
+        ArrayAdapter<CharSequence> notificationNumAdapter = ArrayAdapter.createFromResource(this,R.array.numOfNotifcations,android.R.layout.simple_spinner_item);
+        notificationNumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        notificationsNumSpinner.setAdapter(notificationNumAdapter);
 
+        notificationsNumSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelectedSpinner = parent.getItemAtPosition(position).toString();
+                numberOfToasts = Integer.parseInt(itemSelectedSpinner);
+                addToSharedPreferences(numberOfToasts);
+                displayToast();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                    numberOfToasts = 1;
+                addToSharedPreferences(numberOfToasts);
+            }
+
+        });
+    }
+
+
+    public void addToSharedPreferences (int numOfNotifications)
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences("NumOfToasts",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("Toasts",numOfNotifications);
+        editor.commit();
+    }
+
+    public void displayToast ()
+    {
+        Toast.makeText(this,"Your preference was saved successfully ",Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -46,6 +84,12 @@ public class PreferencesActivity extends AppCompatActivity {
             cursor.moveToFirst();
             int column = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
             Log.d("Email Address", cursor.getString(column));
+            SharedPreferences sharedPreferences = getSharedPreferences("MyFavorites", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Email Address",cursor.getString(column));
+
+            editor.commit();
+            Toast.makeText(this,"Contact was added successfully ", Toast.LENGTH_LONG).show();
         }
     }
 

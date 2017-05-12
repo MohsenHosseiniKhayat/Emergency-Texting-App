@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/sign_in_layout"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:gravity="center"
-             android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
-        android:text="@string/sign_in"/>
+    android:id="@+id/sign_in_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
@@ -22,5 +13,16 @@
         android:layout_centerInParent="true"
         android:visibility="visible"
         android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="209dp"
+        android:layout_height="156dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:text="@string/sign_in"
+        android:textAlignment="center"
+        android:textSize="46sp"
+        android:textStyle="bold" />
 
 </FrameLayout>

@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
         mFirebaseRemoteConfig.setDefaults(defaultConfigMap);
 
         // Fetch remote config.
-        fetchConfig();
+        //fetchConfig();
 
 
         // New child entries
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
 
-        mMessageEditText = (EditText) findViewById(R.id.messageEditText);
+       /* mMessageEditText = (EditText) findViewById(R.id.messageEditText);
         mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mSharedPreferences
                 .getInt(CodelabPreferences.FRIENDLY_MSG_LENGTH, DEFAULT_MSG_LENGTH_LIMIT))});
         mMessageEditText.addTextChangedListener(new TextWatcher() {
@@ -265,10 +265,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void afterTextChanged(Editable editable) {
             }
-        });
+        });*/
 
         final ArrayList<String> receiverIds = new ArrayList<>();
-        mSendButton = (Button) findViewById(R.id.sendButton);
+       /* mSendButton = (Button) findViewById(R.id.sendButton);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity
                 //lastKnownLocation = friendlyMessage.getLocationOfOrigin();
                 mMessageEditText.setText("");
             }
-        });
+        });*/
 
         final Button viewLocation = (Button) findViewById(R.id.viewLocation);
         viewLocation.setOnClickListener(new View.OnClickListener() {
@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity
                 sendInvitation();
                 return true;
             case R.id.fresh_config_menu:
-                fetchConfig();
+                //fetchConfig();
                 return true;
             case R.id.sign_out_menu:
                 mFirebaseAuth.signOut();
@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     // Fetch the config to determine the allowed length of messages.
-    public void fetchConfig() {
+    /*public void fetchConfig() {
         long cacheExpiration = 3600; // 1 hour in seconds
         // If developer mode is enabled reduce cacheExpiration to 0 so that
         // each fetch goes to the server. This should not be used in release
@@ -435,7 +435,7 @@ public class MainActivity extends AppCompatActivity
                         applyRetrievedLengthLimit();
                     }
                 });
-    }
+    }*/
 
     /**
      * Apply retrieved length limit to edit text field.

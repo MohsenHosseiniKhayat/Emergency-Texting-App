@@ -11,20 +11,47 @@
     tools:context="com.google.firebase.codelab.friendlychat.PreferencesActivity">
 
     <Button
-        android:text="Choose Contacts"
+        android:id="@+id/buttonContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonContacts"
+        android:layout_marginTop="67dp"
+        android:background="#8A8382"
+        android:fontFamily="sans-serif"
+        android:text="Choose Contacts"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="sans"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="86dp" />
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:text="select the contacts that you wish to alert"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Spinner
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="93dp"
+        android:id="@+id/spinnerNumOfNotifications"
+        android:spinnerMode="dialog"
+        android:gravity="center"
+        android:layout_width="100dp"
         android:layout_below="@+id/buttonContacts"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="52dp"
-        android:id="@+id/spinnerNumOfNotifications" />
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Select the number of notifications your message will send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/buttonContacts"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

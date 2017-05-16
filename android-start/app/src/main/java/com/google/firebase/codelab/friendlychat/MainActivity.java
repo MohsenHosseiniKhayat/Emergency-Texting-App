@@ -35,9 +35,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -106,6 +108,11 @@ public class MainActivity extends AppCompatActivity
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
     public static final String ANONYMOUS = "anonymous";
     private static final String MESSAGE_SENT_EVENT = "message_sent";
+    final String ACCIDENT = "is involved in an accident";
+    final String ASSAULT = "is getting assaulted";
+    final String NATURALDISASTER = "is affected by a disaster";
+    final String SAFE = "is safe now";
+    final String EMERGENCYDIAL = "is calling 911";
     private String mUsername;
     private String mPhotoUrl;
     private SharedPreferences mSharedPreferences;
@@ -204,7 +211,10 @@ public class MainActivity extends AppCompatActivity
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 FirebaseAppIndex.getInstance().update(getMessageIndexable(friendlyMessage));
 
-                viewHolder.messageTextView.setText(friendlyMessage.getText());
+                String toDisplay = friendlyMessage.getText();
+                String toHighlight = textToHighLight(friendlyMessage);
+                toDisplay = toDisplay.replaceAll(toHighlight,ColorToHighlight(friendlyMessage)+toHighlight +"</font>");
+                viewHolder.messageTextView.setText(Html.fromHtml(toDisplay));
                 viewHolder.messengerTextView.setText(friendlyMessage.getName());
                 if (friendlyMessage.getPhotoUrl() == null) {
                     viewHolder.messengerImageView
@@ -315,7 +325,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        final Button sendAlert = (Button) findViewById(R.id.SendAlert);
+        /*final Button sendAlert = (Button) findViewById(R.id.SendAlert);
         final Context thisContext = this;
         sendAlert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -323,7 +333,7 @@ public class MainActivity extends AppCompatActivity
                 Intent alertIntent = new Intent(thisContext, SendAlertActivity.class);
                 startActivity(alertIntent);
             }
-        });
+        });*/
 
         createAlertButtons();
     }
@@ -363,17 +373,17 @@ public class MainActivity extends AppCompatActivity
             case R.id.invite_menu:
                 sendInvitation();
                 return true;
-            case R.id.fresh_config_menu:
+            /*case R.id.fresh_config_menu:
                 //fetchConfig();
-                return true;
+                return true;*/
             case R.id.sign_out_menu:
                 mFirebaseAuth.signOut();
                 mUsername = ANONYMOUS;
                 startActivity(new Intent(this, SignInActivity.class));
                 return true;
-            case R.id.preferences_menu:
-                Intent prefIntent = new Intent(this, PreferencesActivity.class);
-                startActivity(prefIntent);
+            case R.id.Message_recipients_menu:
+                Intent intent = new Intent (Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Email.CONTENT_URI);
+                startActivityForResult(intent, 2017);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -509,16 +519,14 @@ public class MainActivity extends AppCompatActivity
         Button assaultButton = (Button) findViewById(R.id.buttonAssaultAlert);
         Button disasterButton = (Button) findViewById(R.id.buttonDisasterAlert);
         Button safeButton = (Button) findViewById(R.id.buttonSafeAlert);
-        Button callEmergency = (Button) findViewById(R.id.buttonCall);
+        final Button callEmergency = (Button) findViewById(R.id.buttonCall);
 
 
         //Create message status strings
-        final String ACCIDENT = "is involved in an ACCIDENT";
-        final String ASSAULT = "is being Robbed/Assaulted";
-        final String NATURALDISASTER = "is affected by a NATURAL DISASTER";
-        final String SAFE = "is SAFE now";
-        final String EMEGENCYDIAL = "is calling 911";
+
         final ArrayList<String> favContacts = new ArrayList<>();
+
+
 
         //Add favorite contacts from Choose Contact Activity
         SharedPreferences sharedPreferences = getSharedPreferences("MyFavorites", Context.MODE_PRIVATE);
@@ -549,10 +557,13 @@ public class MainActivity extends AppCompatActivity
                 String accidentMessage = mUsername + " " + ACCIDENT;
                 try {
                     FriendlyMessage friendlyMessage = new FriendlyMessage(accidentMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    friendlyMessage.setType("Accident");
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
-                    Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG).show();
+                    Toast toast = Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 425);
+                    toast.show();
                 } catch (SecurityException se) {
-                    Log.wtf("SendAlertActivity", "User should already have given permission: " + se.toString());
+                    Log.wtf("MainActivity", "User should already have given permission: " + se.toString());
                 }
             }
         });
@@ -566,10 +577,13 @@ public class MainActivity extends AppCompatActivity
                 String assaultMessage = mUsername + " " + ASSAULT;
                 try {
                     FriendlyMessage friendlyMessage = new FriendlyMessage(assaultMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    friendlyMessage.setType("Assault");
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
-                    Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG).show();
+                    Toast toast = Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 425);
+                    toast.show();
                 } catch (SecurityException se) {
-                    Log.wtf("SendAlertActivity", "User should already have given permission: " + se.toString());
+                    Log.wtf("MainActivity", "User should already have given permission: " + se.toString());
                 }
             }
         });
@@ -583,10 +597,13 @@ public class MainActivity extends AppCompatActivity
                 String disasterMessage = mUsername + " " + NATURALDISASTER;
                 try {
                     FriendlyMessage friendlyMessage = new FriendlyMessage(disasterMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    friendlyMessage.setType("Disaster");
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
-                    Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG).show();
+                    Toast toast = Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 425);
+                    toast.show();
                 } catch (SecurityException se) {
-                    Log.wtf("SendAlertActivity", "User should already have given permission: " + se.toString());
+                    Log.wtf("MainActivity", "User should already have given permission: " + se.toString());
                 }
             }
         });
@@ -598,10 +615,13 @@ public class MainActivity extends AppCompatActivity
                 String safetyMessage = mUsername + " " + SAFE;
                 try {
                     FriendlyMessage friendlyMessage = new FriendlyMessage(safetyMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    friendlyMessage.setType("Safe");
                     mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
-                    Toast.makeText(thisStrong, "Safety notice sent!", Toast.LENGTH_LONG).show();
+                    Toast toast = Toast.makeText(thisStrong, "Location Sent", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 425);
+                    toast.show();
                 } catch (SecurityException se) {
-                    Log.wtf("SendAlertActivity", "User should already have given permission: " + se.toString());
+                    Log.wtf("MainActivity", "User should already have given permission: " + se.toString());
                 }
             }
         });
@@ -610,8 +630,20 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-                phoneIntent.setData(Uri.parse("tel:912"));
-
+                phoneIntent.setData(Uri.parse("tel:911"));
+                String emergencyMessage =  mUsername + " " + EMERGENCYDIAL;
+                try {
+                    FriendlyMessage friendlyMessage = new FriendlyMessage(emergencyMessage, mUsername, mPhotoUrl, favContacts, myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    friendlyMessage.setType("911");
+                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+                    Toast toast = Toast.makeText(thisStrong, "Status Sent", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 425);
+                    toast.show();
+                }
+                catch (SecurityException se)
+                {
+                    Log.wtf("MainActivity","User should already have given permission: " + se.toString());
+                }
 
                 if (ActivityCompat.checkSelfPermission(thisStrong, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
@@ -626,6 +658,54 @@ public class MainActivity extends AppCompatActivity
                 startActivity(phoneIntent);
             }
         });
+    }
+
+
+    public String textToHighLight (FriendlyMessage message)
+    {
+        String result = "";
+        if (message.getType().equalsIgnoreCase("911"))
+        {
+            result = "calling 911";
+        }
+        else if (message.getType().equalsIgnoreCase("Disaster"))
+        {
+            result = "disaster";
+        }
+        else if (message.getType().equalsIgnoreCase("Assault"))
+        {
+            result = "assaulted";
+        }
+        else if (message.getType().equalsIgnoreCase("Accident"))
+        {
+            result = "accident";
+        }
+        else if (message.getType().equalsIgnoreCase("safe"))
+        { result = "safe";}
+        return result;
+    }
+
+    public String ColorToHighlight (FriendlyMessage friendlyMessage)
+    {
+        String result = "<font color='#0c0000'>";
+        if (friendlyMessage.getType().equalsIgnoreCase("911"))
+        {
+            result = "<font color='#cc0000'>";
+        }
+        else if (friendlyMessage.getType().equalsIgnoreCase("Disaster"))
+        {
+            result = "<font color='#fc7e00'>";
+        }
+        else if (friendlyMessage.getType().equalsIgnoreCase("Assault"))
+        {
+            result = "<font color='#cc0000'>";
+        }
+        else if (friendlyMessage.getType().equalsIgnoreCase("Accident"))
+        {
+            result = "<font color='#fc7e00'>";
+        }
+        else if (friendlyMessage.getType().equalsIgnoreCase("Safe")) { result = "<font color='#01a50c'>";}
+        return result;
     }
 
 }

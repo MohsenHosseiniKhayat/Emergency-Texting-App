@@ -15,6 +15,7 @@
  */
 package com.google.firebase.codelab.friendlychat;
 
+import android.graphics.Color;
 import android.location.Location;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +31,7 @@ public class FriendlyMessage {
     public ArrayList<String> receiverIds;
     private double latitude;
     private double longitude;
+    private String type = "Safe";
 
     public FriendlyMessage() {
     }
@@ -100,4 +102,11 @@ public class FriendlyMessage {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    public void setType (String newType)
+    {
+        type = newType;
+    }
+
+    public String getType () {return type;}
 }
